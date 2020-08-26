@@ -9,7 +9,9 @@
     "declaration": true,
     "outDir": "dist/",
     "types": ["react", "react-native"],
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "allowJs": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }

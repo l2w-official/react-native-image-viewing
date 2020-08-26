@@ -1,0 +1,31 @@
+declare namespace _default {
+    export const gray: string;
+    export const gray1: string;
+    export const gray2: string;
+    export const blue: string;
+    export const darkBlue: string;
+    export const mainBlue: string;
+    export const primary: string;
+    export const white: string;
+    export const lightBlue: string;
+    export const quizColor: string;
+    export const lessonColor: string;
+    export const whiteOpacity: string;
+    export const whiteOpacity1: string;
+    export const whiteOpacity2: string;
+    export const courseDescription: string;
+    export const yellow: string;
+    export const textPrimary: string;
+    export const textDarkPrimary: string;
+    export const textSecondary: string;
+    export const textDarkSecondary: string;
+    export const textTertiary: string;
+    export const textDarkTertiary: string;
+    export const secondaryBg: string;
+    export const lineSeperator: string;
+    export const lightGreen: string;
+    export const lightRed: string;
+    export const black: string;
+}
+export default _default;
+export const isDark: boolean;

@@ -38,9 +38,9 @@ function ImageViewing({ images, imageIndex, visible, onRequestClose, onLongPress
         }
     }, [currentImageIndex]);
     const onZoom = useCallback((isScaled) => {
-        var _a, _b;
+        var _a;
         // @ts-ignore
-        (_b = (_a = imageList) === null || _a === void 0 ? void 0 : _a.current) === null || _b === void 0 ? void 0 : _b.setNativeProps({ scrollEnabled: !isScaled });
+        (_a = imageList === null || imageList === void 0 ? void 0 : imageList.current) === null || _a === void 0 ? void 0 : _a.setNativeProps({ scrollEnabled: !isScaled });
         toggleBarsVisible(!isScaled);
     }, [imageList]);
     if (!visible) {

@@ -18,7 +18,8 @@
   ],
   "scripts": {
     "build": "tsc",
-    "postversion": "yarn build"
+    "postversion": "yarn build",
+    "prepare": "install-peers"
   },
   "peerDependencies": {
     "react": ">=16.11.0",
@@ -42,8 +43,9 @@
     "@babel/runtime": "7.7.4",
     "@types/react": "16.9.13",
     "@types/react-native": "0.60.23",
-    "react": "16.12.0",
-    "react-native": "0.61.5",
-    "typescript": "3.7.2"
+    "install-peers-cli": "^2.2.0",
+    "react": ">=16.11.0",
+    "react-native": ">=0.61.3",
+    "typescript": "^3.8.3"
   }
 }
