@@ -9,13 +9,13 @@
 import React, { ComponentType, useCallback, useEffect } from "react";
 import {
   Animated,
-  Dimensions,
   StyleSheet,
   View,
   VirtualizedList,
   ModalProps,
   Modal,
 } from "react-native";
+import Orientation from "react-native-orientation-locker";
 
 import ImageItem from "./components/ImageItem/ImageItem";
 import ImageDefaultHeader from "./components/ImageDefaultHeader";
@@ -24,7 +24,7 @@ import StatusBarManager from "./components/StatusBarManager";
 import useAnimatedComponents from "./hooks/useAnimatedComponents";
 import useImageIndexChange from "./hooks/useImageIndexChange";
 import useRequestClose from "./hooks/useRequestClose";
-import { ImageSource } from "./@types";
+import { ImageSource, Dimensions } from "./@types";
 
 type Props = {
   images: ImageSource[];
@@ -46,8 +46,6 @@ type Props = {
 const DEFAULT_ANIMATION_TYPE = "fade";
 const DEFAULT_BG_COLOR = "#000";
 const DEFAULT_DELAY_LONG_PRESS = 800;
-const SCREEN = Dimensions.get("screen");
-const SCREEN_WIDTH = SCREEN.width;
 
 function ImageViewing({
   images,
@@ -67,12 +65,23 @@ function ImageViewing({
 }: Props) {
   const imageList = React.createRef<VirtualizedList<ImageSource>>();
   const [opacity, onRequestCloseEnhanced] = useRequestClose(onRequestClose);
-  const [currentImageIndex, onScroll] = useImageIndexChange(imageIndex, SCREEN);
+  const [layout, setLayout] = React.useState<Dimensions>({width: 0, height: 0});
+  const [currentImageIndex, onScroll] = useImageIndexChange(imageIndex, layout);
+
   const [
     headerTransform,
     footerTransform,
     toggleBarsVisible,
   ] = useAnimatedComponents();
+
+  useEffect(() => {
+    if (visible) {
+      Orientation.unlockAllOrientations();
+    }
+    return () => {
+      Orientation.lockToPortrait();
+    }
+  }, [visible]);
 
   useEffect(() => {
     if (onImageIndexChange) {
@@ -93,18 +102,28 @@ function ImageViewing({
     return null;
   }
 
+  const onRequestCloseWithLock = () => {
+    Orientation.lockToPortrait();
+    onRequestCloseEnhanced();
+  }
+
   return (
     <Modal
       transparent={presentationStyle === "overFullScreen"}
       visible={visible}
       presentationStyle={presentationStyle}
       animationType={animationType}
-      onRequestClose={onRequestCloseEnhanced}
-      supportedOrientations={["portrait"]}
+      onRequestClose={onRequestCloseWithLock}
+      supportedOrientations={["portrait", "landscape"]}
       hardwareAccelerated
     >
       <StatusBarManager presentationStyle={presentationStyle} />
-      <View style={[styles.container, { opacity, backgroundColor }]}>
+      <View
+        style={[styles.container, { opacity, backgroundColor }]}
+        onLayout={(e) => {
+            setLayout(e.nativeEvent.layout);
+        }}
+      >
         <Animated.View style={[styles.header, { transform: headerTransform }]}>
           {typeof HeaderComponent !== "undefined"
             ? (
@@ -113,7 +132,11 @@ function ImageViewing({
               })
             )
             : (
-              <ImageDefaultHeader onRequestClose={onRequestCloseEnhanced} />
+              <ImageDefaultHeader
+                title={images[currentImageIndex]?.title}
+                layout={layout}
+                onRequestClose={onRequestCloseWithLock}
+              />
             )}
         </Animated.View>
         <VirtualizedList
@@ -130,19 +153,20 @@ function ImageViewing({
           getItem={(_, index) => images[index]}
           getItemCount={() => images.length}
           getItemLayout={(_, index) => ({
-            length: SCREEN_WIDTH,
-            offset: SCREEN_WIDTH * index,
+            length: layout.width,
+            offset: layout.width * index,
             index,
           })}
           renderItem={({ item: imageSrc }) => (
             <ImageItem
               onZoom={onZoom}
               imageSrc={imageSrc}
-              onRequestClose={onRequestCloseEnhanced}
+              onRequestClose={onRequestCloseWithLock}
               onLongPress={onLongPress}
               delayLongPress={delayLongPress}
               swipeToCloseEnabled={swipeToCloseEnabled}
               doubleTapToZoomEnabled={doubleTapToZoomEnabled}
+              layout={layout}
             />
           )}
           onMomentumScrollEnd={onScroll}
@@ -167,6 +191,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#000",
+    width: '100%',
   },
   header: {
     position: "absolute",
