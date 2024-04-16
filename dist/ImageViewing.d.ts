@@ -27,6 +27,7 @@ declare type Props = {
     FooterComponent?: ComponentType<{
         imageIndex: number;
     }>;
+    disablePortraitLock?: boolean;
 };
 declare const EnhancedImageViewing: (props: Props) => JSX.Element;
 export default EnhancedImageViewing;

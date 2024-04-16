@@ -17,7 +17,7 @@ import useRequestClose from "./hooks/useRequestClose";
 const DEFAULT_ANIMATION_TYPE = "fade";
 const DEFAULT_BG_COLOR = "#000";
 const DEFAULT_DELAY_LONG_PRESS = 800;
-function ImageViewing({ images, imageIndex, visible, onRequestClose, onLongPress = () => { }, onImageIndexChange, animationType = DEFAULT_ANIMATION_TYPE, backgroundColor = DEFAULT_BG_COLOR, presentationStyle, swipeToCloseEnabled, doubleTapToZoomEnabled, delayLongPress = DEFAULT_DELAY_LONG_PRESS, HeaderComponent, FooterComponent, }) {
+function ImageViewing({ images, imageIndex, visible, onRequestClose, onLongPress = () => { }, onImageIndexChange, animationType = DEFAULT_ANIMATION_TYPE, backgroundColor = DEFAULT_BG_COLOR, presentationStyle, swipeToCloseEnabled, doubleTapToZoomEnabled, delayLongPress = DEFAULT_DELAY_LONG_PRESS, HeaderComponent, FooterComponent, disablePortraitLock, }) {
     var _a;
     const imageList = React.createRef();
     const [opacity, onRequestCloseEnhanced] = useRequestClose(onRequestClose);
@@ -29,7 +29,9 @@ function ImageViewing({ images, imageIndex, visible, onRequestClose, onLongPress
             Orientation.unlockAllOrientations();
         }
         return () => {
-            Orientation.lockToPortrait();
+            if (!disablePortraitLock) {
+                Orientation.lockToPortrait();
+            }
         };
     }, [visible]);
     useEffect(() => {
@@ -47,7 +49,9 @@ function ImageViewing({ images, imageIndex, visible, onRequestClose, onLongPress
         return null;
     }
     const onRequestCloseWithLock = () => {
-        Orientation.lockToPortrait();
+        if (!disablePortraitLock) {
+            Orientation.lockToPortrait();
+        }
         onRequestCloseEnhanced();
     };
     return (<Modal transparent={presentationStyle === "overFullScreen"} visible={visible} presentationStyle={presentationStyle} animationType={animationType} onRequestClose={onRequestCloseWithLock} supportedOrientations={["portrait", "landscape"]} hardwareAccelerated>

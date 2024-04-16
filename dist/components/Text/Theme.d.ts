@@ -8,7 +8,6 @@ declare const theme: {
         surface: string;
         text: string;
         onSurface: string;
-        onBackground: string;
         disabled: string;
         placeholder: string;
         backdrop: string;
@@ -18,7 +17,7 @@ declare const theme: {
         primary: string;
     };
     fontFamily: string;
-    fonts: import("react-native-paper/lib/typescript/src/types").Fonts;
+    fonts: import("react-native-paper/lib/typescript/types").Fonts;
     dark: boolean;
     mode?: "adaptive" | "exact" | undefined;
     roundness: number;
