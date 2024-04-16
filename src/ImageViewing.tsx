@@ -41,6 +41,7 @@ type Props = {
   delayLongPress?: number;
   HeaderComponent?: ComponentType<{ imageIndex: number }>;
   FooterComponent?: ComponentType<{ imageIndex: number }>;
+  disablePortraitLock?: boolean;
 };
 
 const DEFAULT_ANIMATION_TYPE = "fade";
@@ -62,6 +63,7 @@ function ImageViewing({
   delayLongPress = DEFAULT_DELAY_LONG_PRESS,
   HeaderComponent,
   FooterComponent,
+  disablePortraitLock,
 }: Props) {
   const imageList = React.createRef<VirtualizedList<ImageSource>>();
   const [opacity, onRequestCloseEnhanced] = useRequestClose(onRequestClose);
@@ -79,7 +81,9 @@ function ImageViewing({
       Orientation.unlockAllOrientations();
     }
     return () => {
-      Orientation.lockToPortrait();
+      if (!disablePortraitLock) {
+          Orientation.lockToPortrait();
+      }
     }
   }, [visible]);
 
@@ -103,7 +107,9 @@ function ImageViewing({
   }
 
   const onRequestCloseWithLock = () => {
-    Orientation.lockToPortrait();
+    if (!disablePortraitLock) {
+      Orientation.lockToPortrait();
+    }
     onRequestCloseEnhanced();
   }
 
